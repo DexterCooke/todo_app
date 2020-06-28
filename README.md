@@ -1,0 +1,1 @@
+Example Todo app with Flask backend and Postgresql database. My database uses a docker container to run postgresql
