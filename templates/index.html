@@ -2,6 +2,10 @@
     <head>
         <title>Todo App</title>
         <style>
+            .content {
+                max-width: 500px;
+                margin: auto;
+            }
             .hidden {
               display: none;
             }
@@ -9,7 +13,7 @@
               list-style: none;
               padding: 0;
               margin: 0;
-              width: 300px;
+              width: 200px;
             }
             li {
               clear: both;
@@ -29,15 +33,18 @@
             }
           </style>
     </head>
-    <body>
+    <body class="content">
         <form id="form">
             <input type="text" id="description" name="description" />
             <input type="submit" value="create" />
         </form>
         <div id="error" class="hidden">Something went wrong!</div> 
-        <ul id=todos>
+        <ul id="todos">
             {% for d in data %}
-            <li><input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %}/>{{ d.description }}</li>
+            <li><input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %}/>
+                {{ d.description }}
+                <button class="delete-button" data-id="{{ d.id }}">&cross;</button>
+            </li>
             {% endfor %}
         </ul>
         <script>
@@ -45,7 +52,6 @@
             for (let i = 0; i < checkboxes.length; i++){
                 const checkbox = checkboxes[i];
                 checkbox.onchange = function(e) {
-                    console.log('event', e); 
                     const newCompleted = e.target.checked;
                     const todoId = e.target.dataset['id'];
                     fetch('/todos/' + todoId + '/set-completed', {
@@ -90,6 +96,18 @@
                     document.getElementById('error').className = '';
                 }) 
             }
+
+            const deleteBtns = document.querySelectorAll('.delete-button');
+            for (let i = 0; i < deleteBtns.length; i++) {
+                const btn = deleteBtns[i];
+                btn.onclick = function(e) {
+                    const todoId = e.target.dataset['id'];
+                    fetch('/todos/' + todoId, {
+                        method: 'DELETE'
+                    });
+                }
+            }
+
         </script>
     </body>
 </html>
